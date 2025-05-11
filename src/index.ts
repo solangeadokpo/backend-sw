@@ -2,6 +2,8 @@ import express, { Request, Response } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import dotenv from 'dotenv';
 import { RegisterRoutes } from './generated/tsoa/routes';
+// Import du contrôleur company pour tsoa (nécessaire pour la génération des routes)
+import '../src/controller/CompanyController';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
