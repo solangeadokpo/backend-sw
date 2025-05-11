@@ -16,7 +16,9 @@ import entrepreneurService from '../service/entrepreneurService';
 import { 
   Entrepreneur, 
   CreateEntrepreneurDto, 
-  UpdateEntrepreneurDto 
+  UpdateEntrepreneurDto, 
+  SimpleSearchDto,
+  AdvancedSearchDto
 } from '../model/entrepreneurModel';
 
 @Route('api/entrepreneurs')
@@ -215,6 +217,89 @@ export class EntrepreneurController extends Controller {
       };
     } catch (error: any) {
       console.error(`Erreur dans le contrôleur updateEntrepreneur pour l'ID ${id}:`, error);
+      this.setStatus(500);
+      return { 
+        success: false, 
+        error: 'Erreur serveur' 
+      };
+    }
+  }
+
+
+  /**
+   * Recherche simple d'entrepreneurs
+   */
+  @Post('search')
+  @Security('jwt')
+  @SuccessResponse('200', 'Recherche effectuée avec succès')
+  @TsoaResponse('500', 'Erreur serveur')
+  public async searchEntrepreneurs(
+    @Body() searchData: SimpleSearchDto
+  ): Promise<{ 
+    success: boolean; 
+    data?: Entrepreneur[]; 
+    message?: string; 
+    error?: string 
+  }> {
+    try {
+      const result = await entrepreneurService.searchEntrepreneurs(searchData.query);
+      
+      if (!result.success) {
+        this.setStatus(500);
+        return { 
+          success: false, 
+          error: result.error || 'Erreur lors de la recherche des entrepreneurs' 
+        };
+      }
+      
+      return {
+        success: true,
+        data: result.data as Entrepreneur[],
+        message: 'Recherche effectuée avec succès'
+      };
+    } catch (error: any) {
+      console.error('Erreur dans le contrôleur searchEntrepreneurs:', error);
+      this.setStatus(500);
+      return { 
+        success: false, 
+        error: 'Erreur serveur' 
+      };
+    }
+  }
+
+  /**
+   * Recherche avancée d'entrepreneurs avec filtres spécifiques
+   */
+  @Post('advanced-search')
+  @Security('jwt')
+  @SuccessResponse('200', 'Recherche avancée effectuée avec succès')
+  @TsoaResponse('500', 'Erreur serveur')
+  public async advancedSearchEntrepreneurs(
+    @Body() searchParams: AdvancedSearchDto
+  ): Promise<{ 
+    success: boolean; 
+    data?: Entrepreneur[]; 
+    message?: string; 
+    error?: string 
+  }> {
+    try {
+      const result = await entrepreneurService.advancedSearchEntrepreneurs(searchParams);
+      
+      if (!result.success) {
+        this.setStatus(500);
+        return { 
+          success: false, 
+          error: result.error || 'Erreur lors de la recherche avancée des entrepreneurs' 
+        };
+      }
+      
+      return {
+        success: true,
+        data: result.data as Entrepreneur[],
+        message: 'Recherche avancée effectuée avec succès'
+      };
+    } catch (error: any) {
+      console.error('Erreur dans le contrôleur advancedSearchEntrepreneurs:', error);
       this.setStatus(500);
       return { 
         success: false, 

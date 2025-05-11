@@ -51,3 +51,21 @@ export interface EntrepreneurResponse {
   message?: string;
   error?: string;
 }
+
+export interface SimpleSearchDto {
+  query: string;
+}
+
+export interface AdvancedSearchDto {
+  last_name?: string;
+  first_name?: string;
+  gender?: string;
+  email?: string;
+  phone?: string;
+  residence_city?: string;
+  residence_department?: string;
+  employment?: string;
+  sector?: string;
+  min_age?: number;
+  max_age?: number;
+}
