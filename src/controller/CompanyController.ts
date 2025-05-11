@@ -33,13 +33,6 @@ export class CompanyController extends Controller {
     return companyService.getAllCompanies();
   }
 
-  /**
-   * Recherche des entreprises par nom, secteur ou ville (query params)
-   * @param name Nom de l'entreprise (optionnel)
-   * @param sector Secteur d'activité (optionnel)
-   * @param location_city Ville (optionnel)
-   */
-  @Get('/search')
 
   /**
    * Récupère une entreprise par son id
@@ -121,20 +114,5 @@ export class CompanyController extends Controller {
     return { deleted: true };
   }
 
-  /**
-   * Recherche des entreprises par nom, secteur ou ville (query params)
-   * @param name Nom de l'entreprise (optionnel)
-   * @param sector Secteur d'activité (optionnel)
-   * @param location_city Ville (optionnel)
-   */
-  @Get('/search')
-  public async search(
-    @Query() name?: string,
-    @Query() sector?: string,
-    @Query() location_city?: string
-  ): Promise<Company[]> {
-    // Aucune validation UUID ici : on renvoie toujours la recherche
-    return companyService.searchCompanies({ name, sector, location_city });
-  }
 }
 
