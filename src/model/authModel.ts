@@ -18,3 +18,12 @@ export interface JwtPayload {
   iat?: number;
   exp?: number;
 }
+
+export interface CurrentUserResponse {
+  user: {
+    id: string;
+    email: string;
+  } | null;
+  message?: string;
+  error?: string;
+}

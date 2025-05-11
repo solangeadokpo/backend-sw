@@ -5,10 +5,13 @@ import {
   Route,
   Tags,
   SuccessResponse,
+  Request,
+  Security,
   Response as TsoaResponse
 } from 'tsoa';
+import * as express from 'express';
 import authService from '../service/authService';
-import { UserCredentials, AuthResponse } from '../model/authModel';
+import { UserCredentials, CurrentUserResponse } from '../model/authModel';
 
 @Route('api/auth')
 @Tags('Authentification')
@@ -49,6 +52,47 @@ export class AuthController extends Controller {
       return { user: null, token: null, error: 'Erreur serveur' };
     }
   }
+
+  /**
+   * Récupère l'utilisateur actuellement connecté
+   */
+  @Post('me')
+  @Security('jwt')
+  @SuccessResponse('200', 'Utilisateur récupéré avec succès')
+  @TsoaResponse('401', 'Non authentifié')
+  @TsoaResponse('500', 'Erreur serveur')
+  public async getCurrentUser(
+    @Request() request: express.Request
+  ): Promise<CurrentUserResponse> {
+    try {
+      // Récupérer le token depuis l'en-tête d'autorisation
+      const authHeader = request.headers.authorization;
+      
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        this.setStatus(401);
+        return { user: null, error: 'Token d\'authentification non fourni' };
+      }
+      
+      const token = authHeader.split(' ')[1];
+      const result = await authService.getCurrentUser(token);
+      
+      if (!result.user) {
+        this.setStatus(401);
+        return { user: null, error: result.error || 'Non authentifié' };
+      }
+      
+      return {
+        user: result.user,
+        message: 'Utilisateur récupéré avec succès'
+      };
+    } catch (error: any) {
+      console.error('Erreur dans le contrôleur getCurrentUser:', error);
+      this.setStatus(500);
+      return { user: null, error: 'Erreur serveur' };
+    }
+  }
+
+
 
   /**
    * Déconnecte un utilisateur

@@ -72,6 +72,58 @@ class AuthService {
     }
   }
 
+  // Récupérer l'utilisateur courant à partir du token JWT
+  async getCurrentUser(token: string): Promise<AuthResponse> {
+    try {
+      if (!token) {
+        return {
+          user: null,
+          token: null,
+          error: 'Token non fourni'
+        };
+      }
+
+      // Vérifier la validité du token
+      const payload = this.verifyToken(token);
+      
+      if (!payload) {
+        return {
+          user: null,
+          token: null,
+          error: 'Token invalide ou expiré'
+        };
+      }
+      
+      // Vérifier que l'utilisateur existe toujours dans Supabase
+      const { data: userData, error } = await this.supabase.auth.getUser();
+      
+      if (error || !userData?.user) {
+        return {
+          user: null,
+          token: null,
+          error: error?.message || 'Utilisateur non trouvé'
+        };
+      }
+      
+      // Retourner les informations de l'utilisateur
+      return {
+        user: {
+          id: payload.userId,
+          email: payload.email
+        },
+        token: null // On ne renvoie pas un nouveau token
+      };
+      
+    } catch (error: any) {
+      console.error('Erreur dans getCurrentUser:', error);
+      return {
+        user: null,
+        token: null,
+        error: 'Erreur lors de la récupération de l\'utilisateur courant'
+      };
+    }
+  }
+
   // Déconnecter un utilisateur
   async logout(): Promise<boolean> {
     try {
