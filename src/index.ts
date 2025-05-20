@@ -4,11 +4,17 @@ import dotenv from 'dotenv';
 import { RegisterRoutes } from './generated/tsoa/routes';
 // Import du contrôleur company pour tsoa (nécessaire pour la génération des routes)
 import '../src/controller/CompanyController';
-
+import cors from 'cors';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || '*', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Charger les variables d'environnement
 dotenv.config();
