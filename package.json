@@ -21,6 +21,7 @@
   "homepage": "https://github.com/solangeadokpo/backend-sw#readme",
   "dependencies": {
     "@supabase/supabase-js": "^2.49.4",
+    "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
@@ -29,6 +30,7 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.18",
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.17",
